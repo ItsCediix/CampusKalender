@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Campus Vermietungskalender</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ── DESIGN TOKENS ── */
+    :root {
+      --navy:       #1B3A6B;
+      --navy-h:     #25508A;
+      --coral:      #D94F3D;
+      --coral-bg:   #FDF2F1;
+      --coral-mid:  #F5C3BC;
+      --bg:         #EEF2F9;
+      --surface:    #FFFFFF;
+      --border:     #DDE4EF;
+      --text:       #111827;
+      --muted:      #6B7280;
+      --green:      #16A34A;
+      --radius:     10px;
+      --sh:         0 2px 14px rgba(27,58,107,.09);
+      --sh-lg:      0 8px 36px rgba(27,58,107,.18);
+      --font: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ── */
+    .hdr {
+      background: var(--navy);
+      padding: 18px 20px 22px;
+      color: #fff;
+    }
+    .hdr-inner {
+      max-width: 1080px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .hdr-title {
+      font-size: clamp(.95rem, 2.4vw, 1.4rem);
+      font-weight: 700;
+      letter-spacing: -.025em;
+    }
+    .hdr-sub {
+      font-size: .78rem;
+      font-weight: 400;
+      opacity: .6;
+      margin-top: 3px;
+    }
+    .hdr-badge {
+      background: rgba(255,255,255,.13);
+      border: 1px solid rgba(255,255,255,.22);
+      border-radius: 20px;
+      padding: 5px 15px;
+      font-size: .76rem;
+      font-weight: 600;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    /* ── MAIN CONTAINER ── */
+    .main { max-width: 1080px; margin: 0 auto; padding: 18px 14px 52px; }
+
+
+    /* ── CARD ── */
+    .card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      box-shadow: var(--sh);
+      overflow: hidden;
+    }
+
+    /* ── NAVBAR ── */
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 13px 18px;
+      border-bottom: 1px solid var(--border);
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .nav-l { display: flex; align-items: center; gap: 6px; }
+    .nav-m {
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: -.015em;
+      text-align: center;
+      min-width: 155px;
+      flex: 1;
+    }
+    .nav-r { display: flex; align-items: center; gap: 8px; }
+
+    /* ── BUTTONS ── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      padding: 7px 13px;
+      border: 1.5px solid var(--border);
+      border-radius: 7px;
+      background: var(--surface);
+      font-family: var(--font);
+      font-size: .81rem;
+      font-weight: 500;
+      color: var(--text);
+      cursor: pointer;
+      transition: background .12s, border-color .12s, color .12s;
+      white-space: nowrap;
+      line-height: 1;
+    }
+    .btn:hover { background: var(--bg); border-color: var(--navy); color: var(--navy); }
+    .btn-icon { padding: 7px 11px; font-size: 1.05rem; }
+    .btn-primary {
+      background: var(--navy);
+      border-color: var(--navy);
+      color: #fff;
+    }
+    .btn-primary:hover { background: var(--navy-h); border-color: var(--navy-h); color: #fff; }
+
+    /* ── VIEW TOGGLE ── */
+    .toggle { display: flex; border: 1.5px solid var(--border); border-radius: 7px; overflow: hidden; }
+    .toggle button {
+      border: none;
+      padding: 6px 14px;
+      font-family: var(--font);
+      font-size: .77rem;
+      font-weight: 600;
+      cursor: pointer;
+      background: var(--surface);
+      color: var(--muted);
+      transition: background .12s, color .12s;
+    }
+    .toggle button.on { background: var(--navy); color: #fff; }
+
+    /* ── WEEKDAY ROW ── */
+    .wdays {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+    }
+    .wday {
+      padding: 9px 4px;
+      text-align: center;
+      font-size: .68rem;
+      font-weight: 700;
+      color: var(--muted);
+      letter-spacing: .07em;
+      text-transform: uppercase;
+    }
+
+    /* ── GRID ── */
+    .grid { display: grid; grid-template-columns: repeat(7, 1fr); }
+
+    /* ── CELL ── */
+    .cell {
+      min-height: 96px;
+      padding: 7px 8px 6px;
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+      cursor: default;
+      transition: background .1s;
+    }
+    .cell:nth-child(7n) { border-right: none; }
+
+    .cell.other { background: #F7FAFE; }
+    .cell.other .dnum { color: #BFC9DC; }
+
+    /* Booked cell: coral stripe + tinted bg */
+    .cell.booked {
+      background: var(--coral-bg);
+      cursor: pointer;
+    }
+    .cell.booked::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; bottom: 0;
+      width: 3px;
+      background: var(--coral);
+    }
+    .cell.booked:hover { background: #F9E6E3; }
+
+    /* Today: navy circle on day number */
+    .cell.istoday .dnum-inner {
+      background: var(--navy);
+      color: #fff;
+      border-radius: 50%;
+    }
+
+    /* ── DAY NUMBER ── */
+    .dnum { display: flex; margin-bottom: 5px; }
+    .dnum-inner {
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .81rem;
+      font-weight: 600;
+      border-radius: 50%;
+    }
+
+    /* ── EVENT CHIPS (desktop) ── */
+    .chip {
+      display: block;
+      font-size: .66rem;
+      font-weight: 600;
+      line-height: 1.35;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: var(--coral);
+      color: #fff;
+      margin-bottom: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .chip-more {
+      font-size: .63rem;
+      font-weight: 700;
+      color: var(--coral);
+      padding: 0 2px;
+    }
+
+    /* ── DOTS (mobile) ── */
+    .dots { display: none; gap: 3px; flex-wrap: wrap; margin-top: 4px; }
+    .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--coral); }
+
+    /* ── LEGEND ── */
+    .legend {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      padding: 11px 18px;
+      border-top: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+    .leg { display: flex; align-items: center; gap: 7px; font-size: .77rem; font-weight: 500; color: var(--muted); }
+    .sw { width: 13px; height: 13px; border-radius: 3px; flex-shrink: 0; }
+
+    /* ── STATUS (in legend) ── */
+    .status {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-size: .74rem;
+      color: var(--muted);
+      flex-wrap: wrap;
+    }
+    .sdot { width: 7px; height: 7px; border-radius: 50%; display:inline-block; }
+    .sdot.ok   { background: var(--green); }
+    .sdot.warn { background: #F59E0B; }
+    .sdot.err  { background: var(--coral); }
+
+    /* ── LIST VIEW ── */
+    .list-wrap { padding: 18px 20px; }
+    .lgroup { margin-bottom: 28px; }
+    .lgroup-title {
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 2px;
+    }
+    .litem {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 11px 0;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+    }
+    .litem:last-child { border-bottom: none; }
+    .litem:hover .ltitle { color: var(--navy); }
+    .ldate { min-width: 44px; text-align: center; flex-shrink: 0; }
+    .lday { font-size: 1.4rem; font-weight: 700; color: var(--navy); line-height: 1; }
+    .lwd { font-size: .63rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+    .lbar { width: 3px; min-height: 40px; background: var(--coral); border-radius: 2px; flex-shrink: 0; margin-top: 2px; }
+    .ltitle { font-weight: 600; font-size: .9rem; line-height: 1.3; transition: color .12s; }
+    .lmeta { font-size: .75rem; color: var(--muted); margin-top: 3px; display: flex; flex-wrap: wrap; gap: 10px; }
+
+    /* ── EMPTY STATE ── */
+    .empty { text-align: center; padding: 52px 20px; color: var(--muted); }
+    .empty-icon { font-size: 2.8rem; margin-bottom: 12px; }
+    .empty-title { font-size: 1rem; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+    .empty-txt { font-size: .84rem; }
+
+    /* ── MODAL OVERLAY ── */
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 20, 40, .46);
+      z-index: 200;
+      backdrop-filter: blur(2px);
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .overlay.open { display: flex; }
+
+    @media (min-width: 600px) {
+      .overlay { align-items: center; }
+    }
+
+    .modal {
+      background: #fff;
+      width: 100%;
+      max-width: 460px;
+      max-height: 88vh;
+      overflow-y: auto;
+      border-radius: var(--radius) var(--radius) 0 0;
+      box-shadow: var(--sh-lg);
+      animation: slideUp .2s ease;
+    }
+    @media (min-width: 600px) {
+      .modal { border-radius: var(--radius); max-height: 80vh; }
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(18px); opacity: 0; }
+      to   { transform: translateY(0);    opacity: 1; }
+    }
+
+    .mhead {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 18px 12px;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: #fff;
+      z-index: 1;
+    }
+    .mtitle { font-weight: 700; font-size: 1rem; }
+    .mclose {
+      width: 30px; height: 30px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: transparent;
+      font-family: var(--font);
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .12s;
+      line-height: 1;
+    }
+    .mclose:hover { background: var(--bg); }
+    .mbody { padding: 14px 18px 18px; }
+
+    /* ── EVENT CARD (in modal) ── */
+    .ev {
+      border-left: 3px solid var(--coral);
+      background: var(--coral-bg);
+      border-radius: 0 7px 7px 0;
+      padding: 11px 13px;
+      margin-bottom: 10px;
+    }
+    .ev:last-child { margin-bottom: 0; }
+    .ev-name { font-weight: 600; font-size: .92rem; }
+    .ev-time { font-size: .77rem; font-weight: 600; color: var(--coral); margin-top: 3px; }
+    .ev-detail { font-size: .79rem; color: var(--muted); margin-top: 5px; line-height: 1.55; }
+    .ev-src { font-size: .69rem; color: #9CA3AF; margin-top: 6px; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 620px) {
+      .cell { min-height: 54px; padding: 5px 4px 4px; }
+      .chip, .chip-more { display: none; }
+      .dots { display: flex; }
+      .dnum-inner { font-size: .74rem; width: 21px; height: 21px; }
+      .wday { font-size: .6rem; padding: 7px 2px; letter-spacing: 0; }
+      .nav-m { font-size: .9rem; min-width: 120px; }
+      .toggle { display: none; }
+      .hdr-badge { display: none; }
+      .legend { gap: 12px; }
+      .status { margin-left: 0; width: 100%; }
+    }
+    @media (max-width: 380px) {
+      .cell { min-height: 44px; }
+      .btn { padding: 6px 8px; font-size: .76rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══ HEADER ═══ -->
+<header class="hdr">
+  <div class="hdr-inner">
+    <div>
+      <div class="hdr-title">🏛 Campus Vermietungskalender</div>
+      <div class="hdr-sub">Übersicht aller Campus-Belegungen &amp; Vermietungen</div>
+    </div>
+    <div class="hdr-badge" id="hdrBadge">Lädt …</div>
+  </div>
+</header>
+
+<!-- ═══ MAIN ═══ -->
+<main class="main">
+
+
+
+  <!-- Calendar card -->
+  <div class="card">
+
+    <!-- Nav bar -->
+    <div class="nav">
+      <div class="nav-l">
+        <button class="btn btn-icon" id="prevBtn" title="Vorheriger Monat">‹</button>
+        <button class="btn" id="todayBtn">Heute</button>
+        <button class="btn btn-icon" id="nextBtn" title="Nächster Monat">›</button>
+      </div>
+      <div class="nav-m" id="navLabel">—</div>
+      <div class="nav-r">
+        <div class="toggle">
+          <button class="on" id="btnMonth" onclick="setView('month')">Monat</button>
+          <button         id="btnList"  onclick="setView('list')">Liste</button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Month view -->
+    <div id="viewMonth">
+      <div class="wdays">
+        <div class="wday">Mo</div><div class="wday">Di</div><div class="wday">Mi</div>
+        <div class="wday">Do</div><div class="wday">Fr</div><div class="wday">Sa</div>
+        <div class="wday">So</div>
+      </div>
+      <div class="grid" id="calGrid"></div>
+    </div>
+
+    <!-- List view -->
+    <div id="viewList" style="display:none">
+      <div class="list-wrap" id="listWrap"></div>
+    </div>
+
+    <!-- Legend + status -->
+    <div class="legend">
+      <div class="leg">
+        <div class="sw" style="background:var(--coral-bg);border:1.5px solid var(--coral);"></div>
+        Vermietet
+      </div>
+      <div class="leg">
+        <div class="sw" style="background:#fff;border:1.5px solid var(--border);"></div>
+        Verfügbar
+      </div>
+      <div class="leg">
+        <div class="sw" style="background:var(--navy);border-radius:50%;"></div>
+        Heute
+      </div>
+      <div class="status" id="statusEl"></div>
+    </div>
+
+  </div><!-- /.card -->
+</main>
+
+<!-- ═══ MODAL ═══ -->
+<div class="overlay" id="overlay" onclick="maybeClose(event)">
+  <div class="modal">
+    <div class="mhead">
+      <div class="mtitle" id="mTitle">—</div>
+      <button class="mclose" onclick="closeModal()">✕</button>
+    </div>
+    <div class="mbody" id="mBody"></div>
+  </div>
+</div>
+
+<script>
+/* ╔══════════════════════════════════════════════════════════╗
+   ║  KONFIGURATION — Dateinamen der ICS-Dateien eintragen   ║
+   ╚══════════════════════════════════════════════════════════╝
+   Die Dateien müssen im selben Ordner wie diese HTML-Datei
+   liegen. Weitere Dateien einfach als weitere Zeilen ergänzen.
+*/
+const ICS_FILES = [
+  'calendar.ics',
+  // 'aula.ics',
+  // 'sporthalle.ics',
+  // 'weitere-datei.ics',
+];
+
+/* ════════════════════════
+   STATE
+   ════════════════════════ */
+const TODAY     = new Date();
+let curYear     = TODAY.getFullYear();
+let curMonth    = TODAY.getMonth();
+let curView     = 'month';
+let rawEvents   = [];
+let loadLog     = [];                     // { name, count, ok, err }
+let exCache     = { key: null, evs: [] }; // expanded events cache
+
+const MNAMES = ['Januar','Februar','März','April','Mai','Juni',
+                'Juli','August','September','Oktober','November','Dezember'];
+const WNAMES = ['Mo','Di','Mi','Do','Fr','Sa','So'];
+
+/* ════════════════════════
+   ICS PARSER
+   ════════════════════════ */
+
+/** Remove CRLF/CR folds */
+function unfold(txt) {
+  return txt.replace(/\r\n/g,'\n').replace(/\r/g,'\n').replace(/\n[ \t]/g,'');
+}
+
+/** Parse an iCal date string → { d: Date, a: bool allDay } */
+function icsDate(str, params='') {
+  if (!str) return null;
+  const allDay = params.includes('VALUE=DATE') || str.length === 8;
+  try {
+    const y=+str.slice(0,4), mo=+str.slice(4,6)-1, d=+str.slice(6,8);
+    if (allDay) return { d: new Date(y, mo, d), a: true };
+    const hh=+str.slice(9,11), mm=+str.slice(11,13), ss=+str.slice(13,15);
+    const utc = str.endsWith('Z');
+    return {
+      d: utc ? new Date(Date.UTC(y,mo,d,hh,mm,ss)) : new Date(y,mo,d,hh,mm,ss),
+      a: false
+    };
+  } catch { return null; }
+}
+
+/** Parse RRULE: value string → rule object */
+function parseRRule(v) {
+  const p = {};
+  v.split(';').forEach(s => { const [k,val]=s.split('='); if(k) p[k]=val; });
+  const r = { freq: p['FREQ'], interval: +(p['INTERVAL']||1) };
+  if (p['COUNT']) r.count = +p['COUNT'];
+  if (p['UNTIL']) r.until = icsDate(p['UNTIL'])?.d;
+  return r;
+}
+
+/** Parse DURATION string → milliseconds */
+function parseDuration(s) {
+  const m = s.match(/P(?:(\d+)W)?(?:(\d+)D)?(?:T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?)?/);
+  if (!m) return 0;
+  return ((+m[1]||0)*7*86400 + (+m[2]||0)*86400
+         + (+m[3]||0)*3600   + (+m[4]||0)*60 + (+m[5]||0)) * 1000;
+}
+
+/** Parse full ICS text → array of event objects */
+function parseICS(txt, src) {
+  const lines = unfold(txt).split('\n');
+  const out = [];
+  let ev = null;
+  const esc = s => s.replace(/\\n/g,'\n').replace(/\\,/g,',').replace(/\\;/g,';').replace(/\\\\/g,'\\');
+
+  for (const line of lines) {
+    if (line === 'BEGIN:VEVENT')        { ev = { src }; continue; }
+    if (line === 'END:VEVENT' && ev)    { if (ev.start) out.push(ev); ev=null; continue; }
+    if (!ev) continue;
+
+    const ci = line.indexOf(':');
+    if (ci < 0) continue;
+    const full  = line.slice(0, ci);
+    const val   = line.slice(ci + 1);
+    const si    = full.indexOf(';');
+    const name  = si < 0 ? full : full.slice(0, si);
+    const para  = si < 0 ? ''   : full.slice(si + 1);
+
+    switch (name) {
+      case 'SUMMARY':     ev.summary = esc(val); break;
+      case 'DESCRIPTION': ev.desc    = esc(val); break;
+      case 'LOCATION':    ev.loc     = esc(val); break;
+      case 'DTSTART': { const p=icsDate(val,para); if(p){ ev.start=p.d; ev.allDay=p.a; } break; }
+      case 'DTEND':   { const p=icsDate(val,para); if(p)  ev.end=p.d; break; }
+      case 'DURATION': ev.dur = parseDuration(val); break;
+      case 'RRULE':    ev.rrule = parseRRule(val); break;
+    }
+  }
+  return out;
+}
+
+/* ════════════════════════
+   DATE HELPERS
+   ════════════════════════ */
+const addD = (d,n) => { const r=new Date(d); r.setDate(r.getDate()+n); return r; };
+const addM = (d,n) => { const r=new Date(d); r.setMonth(r.getMonth()+n); return r; };
+const addY = (d,n) => { const r=new Date(d); r.setFullYear(r.getFullYear()+n); return r; };
+const addMs = (d,ms) => new Date(d.getTime()+ms);
+const sameDay = (a,b) => a.getFullYear()===b.getFullYear()&&a.getMonth()===b.getMonth()&&a.getDate()===b.getDate();
+const fmtTime = d => new Date(d).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
+const h = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+
+/* ════════════════════════
+   RECURRENCE EXPANSION
+   ════════════════════════ */
+
+/** Expand all raw events (including recurring) within [winStart, winEnd] */
+function expandAll(events, winStart, winEnd) {
+  const out = [];
+  for (const ev of events) {
+    const dur = ev.dur || (ev.end ? ev.end - ev.start : 86400000);
+
+    if (!ev.rrule) {
+      const s = ev.start;
+      const e = addMs(s, dur);
+      if (s <= winEnd && e >= winStart) out.push(ev);
+      continue;
+    }
+
+    const { freq, interval=1, count, until } = ev.rrule;
+    let cur = new Date(ev.start);
+    let n = 0, guard = 0;
+
+    while (cur <= winEnd && guard < 2000) {
+      guard++;
+      if (count !== undefined && n >= count) break;
+      if (until && cur > until) break;
+      const end = addMs(cur, dur);
+      if (end >= winStart) {
+        out.push({ ...ev, start: new Date(cur), end, isRec: true });
+      }
+      n++;
+      switch(freq) {
+        case 'DAILY':   cur = addD(cur, interval); break;
+        case 'WEEKLY':  cur = addD(cur, 7*interval); break;
+        case 'MONTHLY': cur = addM(cur, interval); break;
+        case 'YEARLY':  cur = addY(cur, interval); break;
+        default: guard = 9999;
+      }
+    }
+  }
+  return out;
+}
+
+/** Return expanded events cached for current month ±1 */
+function monthExpanded() {
+  const key = `${curYear}-${curMonth}`;
+  if (exCache.key === key) return exCache.evs;
+  const ws = new Date(curYear, curMonth - 1, 1);
+  const we = new Date(curYear, curMonth + 2, 0, 23, 59, 59);
+  exCache = { key, evs: expandAll(rawEvents, ws, we) };
+  return exCache.evs;
+}
+
+/** Events that fall on a given date */
+function eventsOnDay(date) {
+  const ds = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
+  const de = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59, 999);
+  return monthExpanded().filter(ev => {
+    const s = new Date(ev.start);
+    const e = new Date(ev.end);
+    const adjE = ev.allDay ? addD(e, -1) : e; // DTEND is exclusive for all-day
+    return s <= de && adjE >= ds;
+  });
+}
+
+/* ════════════════════════
+   MONTH VIEW
+   ════════════════════════ */
+function renderMonth() {
+  document.getElementById('navLabel').textContent = `${MNAMES[curMonth]} ${curYear}`;
+
+  const grid = document.getElementById('calGrid');
+  grid.innerHTML = '';
+
+  const first = new Date(curYear, curMonth, 1);
+  const dow   = (first.getDay() + 6) % 7; // ISO Mon=0
+  const dInM  = new Date(curYear, curMonth + 1, 0).getDate();
+  const prevM = new Date(curYear, curMonth, 0).getDate();
+
+  const cells = [];
+  for (let i = dow - 1; i >= 0; i--) cells.push({ d: prevM-i, m: curMonth-1, y: curYear, other: true });
+  for (let d = 1; d <= dInM; d++)    cells.push({ d, m: curMonth, y: curYear, other: false });
+  const total = Math.ceil(cells.length / 7) * 7;
+  let nd = 1;
+  while (cells.length < total) cells.push({ d: nd++, m: curMonth+1, y: curYear, other: true });
+
+  cells.forEach(c => {
+    const date  = new Date(c.y, c.m, c.d);
+    const evs   = c.other ? [] : eventsOnDay(date);
+    const booked = evs.length > 0;
+    const isToday = sameDay(date, TODAY);
+
+    const cell = document.createElement('div');
+    cell.className = 'cell'
+      + (c.other  ? ' other'   : '')
+      + (isToday  ? ' istoday' : '')
+      + (booked   ? ' booked'  : '');
+
+    // Day number
+    const dn  = document.createElement('div'); dn.className = 'dnum';
+    const dni = document.createElement('div'); dni.className = 'dnum-inner';
+    dni.textContent = c.d;
+    dn.appendChild(dni);
+    cell.appendChild(dn);
+
+    if (booked) {
+      // Desktop: chips
+      evs.slice(0, 2).forEach(ev => {
+        const chip = document.createElement('div'); chip.className = 'chip';
+        chip.textContent = ev.summary || 'Termin';
+        cell.appendChild(chip);
+      });
+      if (evs.length > 2) {
+        const more = document.createElement('div'); more.className = 'chip-more';
+        more.textContent = `+${evs.length - 2}`;
+        cell.appendChild(more);
+      }
+      // Mobile: dots
+      const dots = document.createElement('div'); dots.className = 'dots';
+      for (let i = 0; i < Math.min(evs.length, 5); i++) {
+        const dot = document.createElement('div'); dot.className = 'dot';
+        dots.appendChild(dot);
+      }
+      cell.appendChild(dots);
+
+      cell.addEventListener('click', () => openModal(date, evs));
+    }
+
+    grid.appendChild(cell);
+  });
+}
+
+/* ════════════════════════
+   LIST VIEW
+   ════════════════════════ */
+function renderList() {
+  const wrap = document.getElementById('listWrap');
+  wrap.innerHTML = '';
+
+  const t   = new Date(); t.setHours(0,0,0,0);
+  const end = addM(t, 6);
+  const evs = expandAll(rawEvents, t, end)
+    .filter(ev => new Date(ev.start) >= t && new Date(ev.start) <= end)
+    .sort((a,b) => new Date(a.start) - new Date(b.start));
+
+  if (!evs.length) {
+    wrap.innerHTML = `
+      <div class="empty">
+        <div class="empty-icon">📭</div>
+        <div class="empty-title">Keine bevorstehenden Termine</div>
+        <div class="empty-txt">Keine Vermietungen in den nächsten 6 Monaten gefunden.</div>
+      </div>`;
+    return;
+  }
+
+  // Group by month
+  const groups = {};
+  evs.forEach(ev => {
+    const d = new Date(ev.start);
+    const k = `${d.getFullYear()}-${d.getMonth()}`;
+    if (!groups[k]) groups[k] = { label: `${MNAMES[d.getMonth()]} ${d.getFullYear()}`, evs: [] };
+    groups[k].evs.push(ev);
+  });
+
+  Object.values(groups).forEach(g => {
+    const sec = document.createElement('div'); sec.className = 'lgroup';
+    sec.innerHTML = `<div class="lgroup-title">${g.label}</div>`;
+
+    g.evs.forEach(ev => {
+      const d  = new Date(ev.start);
+      const wd = WNAMES[(d.getDay()+6)%7];
+      const row = document.createElement('div'); row.className = 'litem';
+      row.innerHTML = `
+        <div class="ldate">
+          <div class="lday">${d.getDate()}</div>
+          <div class="lwd">${wd}</div>
+        </div>
+        <div class="lbar"></div>
+        <div style="flex:1;min-width:0">
+          <div class="ltitle">${h(ev.summary||'Termin')}</div>
+          <div class="lmeta">
+            ${ev.allDay
+              ? '<span>🗓 Ganztägig</span>'
+              : `<span>🕐 ${fmtTime(ev.start)}${ev.end?' – '+fmtTime(ev.end):''}</span>`}
+            ${ev.loc  ? `<span>📍 ${h(ev.loc)}</span>` : ''}
+            ${ev.isRec? `<span>🔁 Wiederkehrend</span>` : ''}
+            ${ev.src  ? `<span>📁 ${h(ev.src)}</span>` : ''}
+          </div>
+        </div>`;
+      row.addEventListener('click', () => openModal(d, [ev]));
+      sec.appendChild(row);
+    });
+    wrap.appendChild(sec);
+  });
+}
+
+/* ════════════════════════
+   MODAL
+   ════════════════════════ */
+function openModal(date, evs) {
+  const wd = WNAMES[(date.getDay()+6)%7];
+  document.getElementById('mTitle').textContent =
+    `${wd}, ${date.getDate()}. ${MNAMES[date.getMonth()]} ${date.getFullYear()}`;
+
+  const body = document.getElementById('mBody');
+  if (!evs.length) {
+    body.innerHTML = `
+      <div class="empty" style="padding:28px 0">
+        <div class="empty-icon">✅</div>
+        <div class="empty-title">Kein Termin</div>
+        <div class="empty-txt">Der Campus ist an diesem Tag frei und verfügbar.</div>
+      </div>`;
+  } else {
+    body.innerHTML = evs.map(ev => `
+      <div class="ev">
+        <div class="ev-name">${h(ev.summary||'Termin')}</div>
+        <div class="ev-time">
+          ${ev.allDay
+            ? '🗓 Ganztägig'
+            : `🕐 ${fmtTime(ev.start)}${ev.end?' – '+fmtTime(ev.end):''}`}
+        </div>
+        ${ev.loc  ? `<div class="ev-detail">📍 ${h(ev.loc)}</div>` : ''}
+        ${ev.desc ? `<div class="ev-detail" style="white-space:pre-wrap;margin-top:6px">${h(ev.desc.slice(0,500))}</div>` : ''}
+        ${ev.isRec? `<div class="ev-src">🔁 Wiederkehrender Termin</div>` : ''}
+        ${ev.src  ? `<div class="ev-src">📁 Quelle: ${h(ev.src)}</div>` : ''}
+      </div>`).join('');
+  }
+  document.getElementById('overlay').classList.add('open');
+}
+
+function closeModal() { document.getElementById('overlay').classList.remove('open'); }
+function maybeClose(e) { if (e.target === document.getElementById('overlay')) closeModal(); }
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+/* ════════════════════════
+   VIEW & NAVIGATION
+   ════════════════════════ */
+function setView(v) {
+  curView = v;
+  document.getElementById('viewMonth').style.display = v==='month' ? '' : 'none';
+  document.getElementById('viewList').style.display  = v==='list'  ? '' : 'none';
+  document.getElementById('btnMonth').classList.toggle('on', v==='month');
+  document.getElementById('btnList').classList.toggle('on',  v==='list');
+  v === 'list' ? renderList() : renderMonth();
+}
+
+document.getElementById('prevBtn').addEventListener('click', () => {
+  curMonth--; if (curMonth < 0)  { curMonth=11; curYear--; }
+  render();
+});
+document.getElementById('nextBtn').addEventListener('click', () => {
+  curMonth++; if (curMonth > 11) { curMonth=0;  curYear++; }
+  render();
+});
+document.getElementById('todayBtn').addEventListener('click', () => {
+  curYear = TODAY.getFullYear(); curMonth = TODAY.getMonth(); render();
+});
+
+function render() { curView==='month' ? renderMonth() : renderList(); }
+function bustCache() { exCache.key = null; }
+
+/* ════════════════════════
+   STATUS BAR
+   ════════════════════════ */
+function updateStatus() {
+  const ok    = loadLog.filter(s => s.ok);
+  const fail  = loadLog.filter(s => !s.ok);
+  const total = rawEvents.length;
+
+  // Header badge
+  const badge = document.getElementById('hdrBadge');
+  badge.textContent = ok.length
+    ? `${total} Termin${total!==1?'e':''}`
+    : fail.length ? 'Keine Datei geladen' : 'Kein Kalender';
+
+  // Footer status
+  let html = '';
+  if (ok.length)   html += `<span><span class="sdot ok"></span> ${total} Termin${total!==1?'e':''} aus ${ok.length} Datei${ok.length!==1?'en':''}</span>`;
+  if (fail.length) html += `<span><span class="sdot err"></span> ${fail.length} Datei${fail.length!==1?'en':''} nicht erreichbar</span>`;
+  if (!loadLog.length) html = `<span><span class="sdot warn"></span> Keine ICS-Dateien konfiguriert</span>`;
+  document.getElementById('statusEl').innerHTML = html;
+}
+
+/* ════════════════════════
+   FILE LOADING
+   ════════════════════════ */
+async function loadConfiguredFiles() {
+  for (const name of ICS_FILES) {
+    try {
+      const res = await fetch(name);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const txt = await res.text();
+      const evs = parseICS(txt, name);
+      rawEvents.push(...evs);
+      loadLog.push({ name, count: evs.length, ok: true });
+    } catch(e) {
+      loadLog.push({ name, ok: false, err: e.message });
+    }
+  }
+  bustCache();
+  updateStatus();
+  render();
+}
+
+
+
+/* ════════════════════════
+   BOOT
+   ════════════════════════ */
+loadConfiguredFiles();
+</script>
+</body>
+</html>
