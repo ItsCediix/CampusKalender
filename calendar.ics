@@ -5,170 +5,54 @@ CALSCALE:GREGORIAN
 METHOD:PUBLISH
 X-WR-CALNAME:Campus Vermietungen
 X-WR-TIMEZONE:Europe/Berlin
-X-WR-CALDESC:Belegungskalender für Räume und Hallen des Campus
+X-WR-CALDESC:Belegungskalender für Räume des Campus
 
 BEGIN:VEVENT
 UID:ev-001@campus-kalender
-SUMMARY:Firmenmesse – TechConnect 2026
-DTSTART:20260701T080000
-DTEND:20260701T180000
-LOCATION:Aula & Foyer\, Gebäude A
-DESCRIPTION:Eintägige B2B-Technologiemesse mit 35 Ausstellern. Auf- und Abbau je 1 Stunde vor und nach Veranstaltung. Ansprechpartner: Frau Koch\, Messeorganisation GmbH.
-END:VEVENT
+SUMMARY:Vermietet
+DTSTART:20260704T080000
+DTEND:20260704T220000
+LOCATION:Lyserstraße
+DESCRIPTION:Keine besonderen Anmerkungen
 
 BEGIN:VEVENT
-UID:ev-002@campus-kalender
-SUMMARY:Hochzeitsfeier – Familie Brenner
-DTSTART:20260704T160000
-DTEND:20260705T020000
-LOCATION:Festsaal\, Gebäude C
-DESCRIPTION:Private Feier mit ca. 120 Gästen. Catering durch externen Dienstleister. Schlüsselübergabe: Fr. 04.07 um 14:00 Uhr.
-END:VEVENT
+UID:ev-001@campus-kalender
+SUMMARY:Vermietet
+DTSTART:20260711T080000
+DTEND:20260711T220000
+LOCATION:Lyserstraße
+DESCRIPTION:Keine besonderen Anmerkungen
 
 BEGIN:VEVENT
-UID:ev-003@campus-kalender
-SUMMARY:Sportturnier – Handball-Stadtmeisterschaft
-DTSTART:20260711
-DTEND:20260713
-LOCATION:Sporthalle 1 & 2
-DESCRIPTION:Ganztägiges Hallenturnier des Hamburger Handballverbands. 16 Mannschaften\, 3 Schiedsrichter. Aufbau ab Fr. 10.07 ab 17:00 Uhr.
-END:VEVENT
+UID:ev-001@campus-kalender
+SUMMARY:Vermietet
+DTSTART:20260809T080000
+DTEND:20260809T220000
+LOCATION:Lyserstraße
+DESCRIPTION:Keine besonderen Anmerkungen
 
 BEGIN:VEVENT
-UID:ev-004@campus-kalender
-SUMMARY:Konferenz – Digitale Verwaltung 2026
-DTSTART:20260715T090000
-DTEND:20260716T17000
-LOCATION:Konferenzraum K1–K3\, Gebäude B
-DESCRIPTION:Zweitägige Fachkonferenz für öffentliche Verwaltungen. Ca. 200 Teilnehmende. Livestream und Catering inklusive. Veranstalter: dbb akademie.
-END:VEVENT
+UID:ev-001@campus-kalender
+SUMMARY:Vermietet
+DTSTART:20260821T080000
+DTEND:20260821T220000
+LOCATION:Lyserstraße
+DESCRIPTION:Keine besonderen Anmerkungen
 
 BEGIN:VEVENT
-UID:ev-005@campus-kalender
-SUMMARY:Azubi-Speed-Dating – IHK Hamburg
-DTSTART:20260718T100000
-DTEND:20260718T160000
-LOCATION:Foyer Gebäude A
-DESCRIPTION:Jährliches Azubi-Speed-Dating der IHK Hamburg. 50 Unternehmen\, ca. 300 Bewerberinnen und Bewerber. Tischaufbau ab 08:00 Uhr.
-END:VEVENT
+UID:ev-001@campus-kalender
+SUMMARY:Vermietet
+DTSTART:20260823T080000
+DTEND:20260823T220000
+LOCATION:Lyserstraße
+DESCRIPTION:Keine besonderen Anmerkungen
 
 BEGIN:VEVENT
-UID:ev-006@campus-kalender
-SUMMARY:Konzert – Philharmonisches Kammerorchester
-DTSTART:20260724T190000
-DTEND:20260724T220000
-LOCATION:Aula\, Gebäude A
-DESCRIPTION:Öffentliches Konzert mit klassischen Werken. 350 Plätze. Proben am Vortag 16:00–18:00 Uhr.
-END:VEVENT
-
-BEGIN:VEVENT
-UID:ev-007@campus-kalender
-SUMMARY:Betriebsfeier – Logistik Nord AG
-DTSTART:20260725T170000
-DTEND:20260725T235900
-LOCATION:Festsaal & Terrasse\, Gebäude C
-DESCRIPTION:Sommerfest mit ca. 80 Mitarbeitenden. Grillen auf der Terrasse\, Live-Musik im Saal. Außenbereich bis 22:00 Uhr genehmigt.
-END:VEVENT
-
-BEGIN:VEVENT
-UID:ev-008@campus-kalender
-SUMMARY:Prüfungszentrum – Sprachzertifikate (TELC)
-DTSTART:20260801T080000
-DTEND:20260801T140000
-LOCATION:PC-Pool\, Gebäude D
-DESCRIPTION:Offizielle TELC-Sprachprüfungen B1/B2 Deutsch. 40 Teilnehmende. Zugang nur mit Prüfungsausweis.
-END:VEVENT
-
-BEGIN:VEVENT
-UID:ev-009@campus-kalender
-SUMMARY:Recruiting-Event – Hamburg Port Authority
-DTSTART:20260806T100000
-DTEND:20260806T160000
-LOCATION:Konferenzraum K2\, Gebäude B
-DESCRIPTION:Halbtägiges Recruiting-Event mit Interviews und Präsentationen. Catering selbst mitgebracht.
-END:VEVENT
-
-BEGIN:VEVENT
-UID:ev-010@campus-kalender
-SUMMARY:Yoga & Wellness Wochenende
-DTSTART:20260808
-DTEND:20260810
-LOCATION:Sporthalle 2 & Seminarraum S4
-DESCRIPTION:Zweitägiges Wellness-Event. Yoga\, Meditation\, Ernährungsworkshops. Teilnehmerzahl: 60. Veranstalter: Balance Studio Hamburg.
-END:VEVENT
-
-BEGIN:VEVENT
-UID:ev-011@campus-kalender
-SUMMARY:Fachtagung – Nachhaltige Stadtentwicklung
-DTSTART:20260820T090000
-DTEND:20260820T180000
-LOCATION:Aula & Konferenzraum K1\, Gebäude A+B
-DESCRIPTION:Eintägige Fachtagung mit Keynotes\, Podiumsdiskussionen und Workshops. Ca. 180 Teilnehmende. Veranstalter: Behörde für Stadtentwicklung und Wohnen.
-END:VEVENT
-
-BEGIN:VEVENT
-UID:ev-012@campus-kalender
-SUMMARY:Filmdreh – ARD Dokumentation
-DTSTART:20260825T060000
-DTEND:20260826T200000
-LOCATION:Gesamtes Erdgeschoss\, Gebäude A
-DESCRIPTION:Zweitägiger Filmdreh für eine ARD-Dokumentation über Bildung und Digitalisierung. Produktionsteam ca. 15 Personen. Catering und Parkgenehmigung vorhanden.
-END:VEVENT
-
-BEGIN:VEVENT
-UID:ev-013@campus-kalender
-SUMMARY:Monatlicher Markt – Handwerker & Kreative
-DTSTART:20260906T100000
-DTEND:20260906T170000
-RRULE:FREQ=MONTHLY;INTERVAL=1;COUNT=6
-LOCATION:Außengelände & Foyer\, Eingang Nord
-DESCRIPTION:Monatlicher Kunsthandwerkermarkt mit 25–30 Ausstellern. Aufbau ab 08:00 Uhr\, Abbau bis 19:00 Uhr. Wiederkehrender Termin jeweils ersten Samstag im Monat.
-END:VEVENT
-
-BEGIN:VEVENT
-UID:ev-014@campus-kalender
-SUMMARY:Workshop-Reihe – Design Thinking
-DTSTART:20260910T090000
-DTEND:20260910T170000
-RRULE:FREQ=WEEKLY;INTERVAL=2;COUNT=4
-LOCATION:Kreativraum K5\, Gebäude B
-DESCRIPTION:Vierzeilige Workshop-Reihe (alle 2 Wochen donnerstags). Methoden: Design Thinking\, Agile\, Prototyping. Max. 24 Teilnehmende.
-END:VEVENT
-
-BEGIN:VEVENT
-UID:ev-015@campus-kalender
-SUMMARY:Absolventenfeier – Hochschule Hamburg
-DTSTART:20260919T150000
-DTEND:20260919T220000
-LOCATION:Festsaal\, Gebäude C
-DESCRIPTION:Offizielle Absolventenfeier mit Zeugnisübergabe\, Festrede und Empfang. Ca. 400 Gäste. Buffet und Sektempfang inklusive.
-END:VEVENT
-
-BEGIN:VEVENT
-UID:ev-016@campus-kalender
-SUMMARY:Gesundheitsmesse – FitHH 2026
-DTSTART:20261004
-DTEND:20261006
-LOCATION:Sporthallen 1 & 2 sowie Außengelände
-DESCRIPTION:Dreitägige Gesundheits- und Sportmesse. 80 Aussteller\, erwartete Besucher: 2.500. Messeaufbau: Sa 03.10 ganztägig. Abbau: Mo 05.10 abends.
-END:VEVENT
-
-BEGIN:VEVENT
-UID:ev-017@campus-kalender
-SUMMARY:Podiumsdiskussion – KI in der Verwaltung
-DTSTART:20261015T180000
-DTEND:20261015T210000
-LOCATION:Aula\, Gebäude A
-DESCRIPTION:Öffentliche Abendveranstaltung mit Expertinnen und Experten aus Politik\, Wissenschaft und Praxis. Freier Eintritt\, Anmeldung erforderlich.
-END:VEVENT
-
-BEGIN:VEVENT
-UID:ev-018@campus-kalender
-SUMMARY:Weihnachtskonzert – Kammerchor Altona
-DTSTART:20261206T180000
-DTEND:20261206T210000
-LOCATION:Aula\, Gebäude A
-DESCRIPTION:Weihnachtliches Chorkonzert mit klassischen und modernen Stücken. Ca. 300 Plätze. Einlass ab 17:30 Uhr.
-END:VEVENT
+UID:ev-001@campus-kalender
+SUMMARY:Vermietet
+DTSTART:20261212T080000
+DTEND:20261212T220000
+LOCATION:Lyserstraße
+DESCRIPTION:Keine besonderen Anmerkungen
 
 END:VCALENDAR
