@@ -6,7 +6,6 @@ METHOD:PUBLISH
 X-WR-CALNAME:Campus Vermietungen
 X-WR-TIMEZONE:Europe/Berlin
 X-WR-CALDESC:Belegungskalender für Räume des Campus
-
 BEGIN:VEVENT
 UID:ev-001@campus-kalender
 SUMMARY:Vermietet
@@ -15,7 +14,14 @@ DTEND:20260704T220000
 LOCATION:Lyserstraße
 DESCRIPTION:Keine besonderen Anmerkungen
 END:VEVENT
-
+BEGIN:VEVENT
+UID:ev-1783272421082@campus-kalender
+SUMMARY:VermietetTEST NICHT WIRKLICH
+DTSTART:20260705T080000
+DTEND:20260705T220000
+LOCATION:Lyserstraße
+DESCRIPTION:Keine besonderen Anmerkungen
+END:VEVENT
 BEGIN:VEVENT
 UID:ev-001@campus-kalender
 SUMMARY:Vermietet
@@ -24,7 +30,6 @@ DTEND:20260711T220000
 LOCATION:Lyserstraße
 DESCRIPTION:Keine besonderen Anmerkungen
 END:VEVENT
-
 BEGIN:VEVENT
 UID:ev-001@campus-kalender
 SUMMARY:Vermietet
@@ -33,7 +38,6 @@ DTEND:20260809T220000
 LOCATION:Lyserstraße
 DESCRIPTION:Keine besonderen Anmerkungen
 END:VEVENT
-
 BEGIN:VEVENT
 UID:ev-001@campus-kalender
 SUMMARY:Vermietet
@@ -42,7 +46,6 @@ DTEND:20260821T220000
 LOCATION:Lyserstraße
 DESCRIPTION:Keine besonderen Anmerkungen
 END:VEVENT
-
 BEGIN:VEVENT
 UID:ev-001@campus-kalender
 SUMMARY:Vermietet
@@ -51,7 +54,6 @@ DTEND:20260823T220000
 LOCATION:Lyserstraße
 DESCRIPTION:Keine besonderen Anmerkungen
 END:VEVENT
-
 BEGIN:VEVENT
 UID:ev-001@campus-kalender
 SUMMARY:Vermietet
@@ -60,5 +62,4 @@ DTEND:20261212T220000
 LOCATION:Lyserstraße
 DESCRIPTION:Keine besonderen Anmerkungen
 END:VEVENT
-
 END:VCALENDAR
