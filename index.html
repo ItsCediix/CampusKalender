@@ -430,10 +430,10 @@ body {
    ╚══════════════════════════════════════════════════════════╝
    Weitere Dateien einfach als weitere Zeilen ergänzen.
    Wichtig: Es wird NICHT relativ zu dieser HTML-Datei geladen,
-   sondern direkt von raw.githubusercontent.com (siehe icsUrl()
-   unten). Dadurch zeigt der Kalender immer den aktuellen
-   Datenstand, unabhängig davon, ob das GitHub-Pages-Deployment
-   gerade läuft, fehlgeschlagen ist oder noch aussteht.
+   sondern über die GitHub Contents API (siehe icsApiUrl() unten).
+   Das umgeht sowohl den Pages-Deployment-Status als auch den
+   ~5-Minuten-CDN-Cache von raw.githubusercontent.com — die API
+   liefert den Stand direkt aus git, i.d.R. sofort nach einem Push.
 */
 const ICS_FILES = [
   'calendar.ics',
@@ -447,9 +447,16 @@ const RAW_OWNER  = 'ItsCediix';
 const RAW_REPO   = 'CampusKalender';
 const RAW_BRANCH = 'main';
 
-/** Baut die absolute raw.githubusercontent.com-URL für eine Datei */
-function icsUrl(name) {
-  return `https://raw.githubusercontent.com/${RAW_OWNER}/${RAW_REPO}/${RAW_BRANCH}/${encodeURIComponent(name)}`;
+/** Baut die GitHub-Contents-API-URL für eine Datei (kein CDN-Cache, live aus git) */
+function icsApiUrl(name) {
+  return `https://api.github.com/repos/${RAW_OWNER}/${RAW_REPO}/contents/${encodeURIComponent(name)}?ref=${RAW_BRANCH}`;
+}
+
+/** Dekodiert den base64-Inhalt, den die Contents-API zurückgibt (UTF-8-sicher) */
+function decodeB64Utf8(b64) {
+  const bin = atob(b64.replace(/\n/g, ''));
+  const bytes = Uint8Array.from(bin, c => c.charCodeAt(0));
+  return new TextDecoder('utf-8').decode(bytes);
 }
 
 /* ════════════════════════
@@ -807,13 +814,19 @@ function updateStatus() {
 async function loadConfiguredFiles() {
   for (const name of ICS_FILES) {
     try {
-      // Direkt von raw.githubusercontent.com laden statt relativ zu dieser
-      // Seite — dadurch unabhängig vom Pages-Deployment-Status, und
-      // { cache: 'no-store' } verhindert, dass der Browser eine alte
-      // Version aus seinem eigenen HTTP-Cache zeigt.
-      const res = await fetch(icsUrl(name), { cache: 'no-store' });
+      // Über die GitHub Contents API laden statt raw.githubusercontent.com —
+      // die API liegt nicht hinter dem Fastly-Raw-Cache und liefert den
+      // Stand direkt aus git, i.d.R. sofort nach einem Push. Öffentliche
+      // Repos brauchen dafür keinen Token; das Limit liegt bei 60
+      // Anfragen/Stunde pro Besucher-IP.
+      const res = await fetch(icsApiUrl(name), {
+        cache: 'no-store',
+        headers: { Accept: 'application/vnd.github+json' }
+      });
+      if (res.status === 403) throw new Error('API-Rate-Limit erreicht (60/Std. pro IP)');
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const txt = await res.text();
+      const json = await res.json();
+      const txt = decodeB64Utf8(json.content);
       const evs = parseICS(txt, name);
       rawEvents.push(...evs);
       loadLog.push({ name, count: evs.length, ok: true });
